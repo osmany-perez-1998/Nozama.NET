@@ -1,0 +1,103 @@
+@using ISProject.Utils;
+
+@model ISProject.Models.ShoppingCart
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<h2 class="text-info">Item Details</h2>
+<br />
+
+<form method="post">
+    <div class="row col-12">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @Html.HiddenFor(x => x.ProductSale)
+        @Html.HiddenFor(x => x.ProductSale.Units)
+        @Html.HiddenFor(x => x.ProductSaleID)
+        @Html.HiddenFor(x => x.User)
+        @Html.HiddenFor(x => x.UserId)
+        @Html.HiddenFor(x => x.ProductSale.Seller)
+        @Html.HiddenFor(x => x.ProductSale.SellerId)
+        <div class="col-8">
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label asp-for="ProductSale.Product.Name" class="text-info font-weight-bold"></label>
+                </div>
+                <div class="col-md-8">
+                    <input asp-for="ProductSale.Product.Name" readonly class="form-control" style="background: #fff" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label asp-for="ProductSale.Product.Description" class="text-info font-weight-bold"></label>
+                </div>
+                <div class="col-md-8">
+                    <div class="border p-2">
+                        @Html.Raw(Model.ProductSale.Product.Description)
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label asp-for="ProductSale.Price" class="text-info font-weight-bold"></label>
+                </div>
+                <div class="col-md-8">
+                    <input asp-for="ProductSale.Price" readonly class="form-control" style="background: #fff" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                    <label asp-for="Count" class="text-info font-weight-bold"></label>
+                </div>
+                <div class="col-md-8">
+                    <input asp-for="Count" id="countInput" class="form-control" />
+                    <span asp-validation-for="Count" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-4">
+                </div>
+                <div class="col-md-4">
+                    <a asp-action="Index" class="btn btn-success form-control">Back to List</a>
+                </div>
+                @if(Model.UserId != Model.ProductSale.SellerId){
+                    <div class="col-md-4">
+                        <button type="submit" id="btnAddToCart" onclick="return validateInput(@Model.ProductSale.Units);" value="Add to Cart" class="btn btn-primary form-control">Add to Cart</button>
+                    </div>
+                }
+                else{
+                    <div class="col-md-4">
+                        <button type="button" class="btn disabled">Add to Cart</button>
+                    </div>
+                }
+                @if(User.IsInRole(SD.ManagerUser)){
+                    <div class="col-2 text-right">
+                        <a asp-action="Remove" class="btn btn-outline-danger" asp-area="Customer" asp-controller="Home" asp-route-id="@Model.ProductSaleID">Delete</a>
+                    </div>
+                }
+                
+            </div>
+        </div>
+        <div class="col-3 offset-1">
+            <img src="@Model.ProductSale.Image" alt="Image" width="100%" style="border-radius:5px; border: 1px solid #bbb9b9;">
+        </div>   
+    </div>
+</form>
+
+
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        function validateInput(c){
+            var count = document.getElementById("countInput");
+            if(count.value > c){
+                alert("The maximum amount of items you can buy is " + c);
+                return false;
+            }
+            return true;
+        }
+    </script>
+}

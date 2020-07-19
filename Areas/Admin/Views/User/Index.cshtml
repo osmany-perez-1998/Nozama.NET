@@ -1,0 +1,103 @@
+@model ISProject.Models.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class ="row">
+    <div class = "col-6">
+        <h2 class= "text-info">Users List</h2>
+    </div>
+    <div class = "col-6 text-right">
+        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-info"> New User </a>
+    </div>
+</div>
+
+@if(Model.Users.ToList().Count() > 0 || Model.Sellers.ToList().Count() > 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Type Of User</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Users) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        </td>
+                        
+                        <td>Regular</td>
+                        <td>
+                            <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                        <td>
+                            @if(item.LockoutEnd == null || item.LockoutEnd < DateTime.Now)
+                            {
+                                <a class = "btn btn-success text-white" asp-action="Lock" asp-route-id="@item.Id">
+                                <i class = "fas fa-lock-open"></i>
+                                </a>
+                            }
+                            else{
+                                <a class = "btn btn-danger text-white" asp-action="UnLock" asp-route-id="@item.Id">
+                                <i class = "fas fa-lock"></i>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+            }
+            @foreach (var item in Model.Sellers) {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    
+                    <td>Seller</td>
+                    <td>
+                        <a class="btn btn-outline-info" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a class="btn btn-outline-primary" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                    <td>
+                        @if(item.LockoutEnd == null || item.LockoutEnd < DateTime.Now)
+                            {
+                                <a class = "btn btn-success text-white" asp-action="Lock" asp-route-id="@item.Id">
+                                <i class = "fas fa-lock-open"></i>
+                                </a>
+                            }
+                            else{
+                                <a class = "btn btn-danger text-white" asp-action="UnLock" asp-route-id="@item.Id">
+                                <i class = "fas fa-lock"></i>
+                                </a>
+                            }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else{
+    <p>No users...</p>
+}
